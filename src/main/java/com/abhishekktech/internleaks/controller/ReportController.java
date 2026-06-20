@@ -147,12 +147,17 @@ public class ReportController {
     }
 
     @PostMapping("/analyze-image")
-    public ResponseEntity<String> analyzeOfferImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> analyzeOfferImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "companyName", defaultValue = "Unknown") String companyName) { // 👉 Naya parameter add kiya
+        
         try {
             byte[] imageBytes = file.getBytes();
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
             String mimeType = file.getContentType(); 
-            String aiReport = aiAnalysisService.analyzeOfferImage(base64Image, mimeType);
+            
+            // 👉 companyName ko aage service mein pass kar do
+            String aiReport = aiAnalysisService.analyzeOfferImage(base64Image, mimeType, companyName);
             return ResponseEntity.ok(aiReport);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
