@@ -36,22 +36,15 @@ public class ReportController {
     // ==========================================
     // 1. SCAM WALL APIs
     // ==========================================
-
-
-
-    // ==========================================
-    // 1. SCAM WALL APIs
-    // ==========================================
     
-    // 👉 NAYA ENDPOINT: Scam Wall ke liye saari public reports nikalne ke liye
+    // 👉 Scam Wall ke liye saari public reports nikalne ke liye
     @GetMapping("/reports/all")
     public ResponseEntity<List<Report>> getAllScamWallReports() {
-        // Database se saari reports nikal kar frontend ko bhej dega
         return ResponseEntity.ok(reportRepository.findAll());
     }
 
     @PostMapping("/reports/add")
-   public ResponseEntity<Report> addReport(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Report> addReport(@RequestBody Map<String, Object> payload) {
         
         // Purane fields extract kar rahe hain
         String companyName = (String) payload.get("companyName");
@@ -62,7 +55,7 @@ public class ReportController {
         String description = (String) payload.get("description");
         String userEmail = (String) payload.get("userEmail"); 
 
-        // 🔥 FIX: Naye AI Fields Extract Kar Rahe Hain (Jo pehle hawa mein ud rahe the)
+        // Naye AI Fields Extract Kar Rahe Hain 
         Integer riskPercentage = null;
         if (payload.get("riskPercentage") != null) {
             riskPercentage = Integer.parseInt(payload.get("riskPercentage").toString());
@@ -146,18 +139,27 @@ public class ReportController {
         return ResponseEntity.ok(aiReport);
     }
 
+    // 🔥 FULL CONTEXT ENDPOINT UPDATE 🔥
     @PostMapping("/analyze-image")
     public ResponseEntity<String> analyzeOfferImage(
             @RequestParam("file") MultipartFile file,
-            @RequestParam(value = "companyName", defaultValue = "Unknown") String companyName) { // 👉 Naya parameter add kiya
+            @RequestParam(value = "companyName", defaultValue = "Unknown") String companyName,
+            @RequestParam(value = "companyWebsite", defaultValue = "") String companyWebsite,
+            @RequestParam(value = "paymentDemanded", defaultValue = "Not Sure") String paymentDemanded,
+            @RequestParam(value = "interviewTaken", defaultValue = "Not Sure") String interviewTaken,
+            @RequestParam(value = "hrEmailDomain", defaultValue = "") String hrEmailDomain,
+            @RequestParam(value = "userSuspicionFeedback", defaultValue = "") String userSuspicionFeedback) {
         
         try {
             byte[] imageBytes = file.getBytes();
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
             String mimeType = file.getContentType(); 
             
-            // 👉 companyName ko aage service mein pass kar do
-            String aiReport = aiAnalysisService.analyzeOfferImage(base64Image, mimeType, companyName);
+            // 👉 Saara context ab service ko bheja jayega
+            String aiReport = aiAnalysisService.analyzeOfferImage(
+                base64Image, mimeType, companyName, companyWebsite, 
+                paymentDemanded, interviewTaken, hrEmailDomain, userSuspicionFeedback
+            );
             return ResponseEntity.ok(aiReport);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
