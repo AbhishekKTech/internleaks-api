@@ -24,11 +24,11 @@ public class ScamReport {
     private String verdict;
 
     @Column(columnDefinition = "TEXT")
-    private String redFlags; // JSON string ya comma-separated list ke liye
+    private String redFlags; // For JSON string or comma-separated list
 
     private LocalDateTime reportedAt;
 
-    // Database mein save hone se pehle time auto-set karne ke liye
+    // Auto-set time before saving to the database
     @PrePersist
     protected void onCreate() {
         reportedAt = LocalDateTime.now();

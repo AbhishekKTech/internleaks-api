@@ -10,20 +10,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reports")
-@CrossOrigin(origins = "http://localhost:3000") // Frontend ko block hone se bachayega
+@CrossOrigin(origins = "http://localhost:3000")
 public class ScamReportController {
 
     @Autowired
     private ScamReportRepository repository;
 
-    // 1. Naya scam save karne ke liye (POST)
+    // 1. Save a new scam report (POST)
     @PostMapping
     public ResponseEntity<ScamReport> saveReport(@RequestBody ScamReport report) {
         ScamReport savedReport = repository.save(report);
         return ResponseEntity.ok(savedReport);
     }
 
-    // 2. Saare scams ko Scam Wall par dikhane ke liye (GET)
+    // 2. Retrieve all scam reports (GET)
     @GetMapping
     public ResponseEntity<List<ScamReport>> getAllReports() {
         return ResponseEntity.ok(repository.findAll());

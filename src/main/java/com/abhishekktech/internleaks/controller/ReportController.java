@@ -37,7 +37,7 @@ public class ReportController {
     // 1. SCAM WALL APIs
     // ==========================================
     
-    // 👉 Scam Wall ke liye saari public reports nikalne ke liye
+    // Retrieve all public reports for Scam Wall
     @GetMapping("/reports/all")
     public ResponseEntity<List<Report>> getAllScamWallReports() {
         return ResponseEntity.ok(reportRepository.findAll());
@@ -46,7 +46,7 @@ public class ReportController {
     @PostMapping("/reports/add")
     public ResponseEntity<Report> addReport(@RequestBody Map<String, Object> payload) {
         
-        // Purane fields extract kar rahe hain
+        // Extract legacy fields
         String companyName = (String) payload.get("companyName");
         String websiteUrl = (String) payload.get("websiteUrl");
         if (websiteUrl == null) websiteUrl = (String) payload.get("companyWebsite"); // Fallback
@@ -55,7 +55,7 @@ public class ReportController {
         String description = (String) payload.get("description");
         String userEmail = (String) payload.get("userEmail"); 
 
-        // Naye AI Fields Extract Kar Rahe Hain 
+        // Extract new AI fields
         Integer riskPercentage = null;
         if (payload.get("riskPercentage") != null) {
             riskPercentage = Integer.parseInt(payload.get("riskPercentage").toString());
@@ -67,13 +67,13 @@ public class ReportController {
         String paymentDemanded = (String) payload.get("paymentDemanded");
         String interviewTaken = (String) payload.get("interviewTaken");
 
-        // Service ko saara data bhej rahe hain
+        // Submit report with all extracted data
         Report savedReport = reportService.submitReport(
             companyName, websiteUrl, scamType, description, 
             riskPercentage, verdict, redFlags, hrEmailDomain, paymentDemanded, interviewTaken
         );
         
-        // Agar email bheja hai frontend ne, toh usko save karo
+        // Save user email if provided
         if (userEmail != null && !userEmail.isEmpty()) {
             savedReport.setUserEmail(userEmail);
             reportRepository.save(savedReport);
@@ -139,7 +139,7 @@ public class ReportController {
         return ResponseEntity.ok(aiReport);
     }
 
-    // 🔥 FULL CONTEXT ENDPOINT UPDATE 🔥
+    // FULL CONTEXT ENDPOINT UPDATE 
     @PostMapping("/analyze-image")
     public ResponseEntity<String> analyzeOfferImage(
             @RequestParam("file") MultipartFile file,

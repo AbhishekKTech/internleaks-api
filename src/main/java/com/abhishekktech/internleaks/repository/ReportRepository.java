@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
     
-    // Ye function ab tere ReportService se match karega
+    // Matches ReportService usage
     List<Report> findByCompanyIdOrderByCreatedAtDesc(Long companyId);
     
-    // User ke dashboard ke liye
+    // For the user dashboard
     List<Report> findByUserEmail(String userEmail); 
 }

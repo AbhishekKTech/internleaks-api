@@ -20,7 +20,7 @@ public class Report {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    // 🔥 NAYE COLUMNS AI DATA KE LIYE
+    // New columns for AI data analysis
     private Integer riskPercentage;
 
     @Column(columnDefinition = "TEXT")

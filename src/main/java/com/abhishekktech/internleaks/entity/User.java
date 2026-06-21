@@ -39,7 +39,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Ye tere Role-based access (Admin/User) ko handle karega
+        // Handles role-based authorities (e.g., ADMIN/USER)
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
@@ -50,7 +50,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Hum email ko hi username maanenge
+        return email; // use email as the username
     }
 
     @Override
@@ -74,5 +74,5 @@ public class User implements UserDetails {
     }
 
     @Column(nullable = false)
-    private int credits = 200;
+    private int credits = 2;
 }

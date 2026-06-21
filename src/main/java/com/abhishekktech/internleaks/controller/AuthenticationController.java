@@ -4,7 +4,7 @@ import com.abhishekktech.internleaks.service.AuthenticationService;
 import com.abhishekktech.internleaks.repository.UserRepository;
 import com.abhishekktech.internleaks.entity.User;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder; // 👉 NAYA IMPORT
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -16,9 +16,9 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder; // 👉 NAYA FIELD
+    private final PasswordEncoder passwordEncoder;
 
-    // Constructor mein PasswordEncoder add kiya
+    // PasswordEncoder added to constructor
     public AuthenticationController(AuthenticationService service, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.service = service;
         this.userRepository = userRepository;
@@ -58,7 +58,14 @@ public class AuthenticationController {
         return ResponseEntity.badRequest().body("User not found");
     }
 
-    // 👉 NAYA ENDPOINT (PUT ki jagah POST aur Password Encode hoga)
+    @PostMapping("/social")
+    public ResponseEntity<Map<String, Object>> socialLogin(
+            @RequestBody GoogleAuthRequest request
+    ) {
+        return ResponseEntity.ok(service.googleLogin(request.getName(), request.getEmail()));
+    }
+
+    
     @PostMapping("/update-profile")
     public ResponseEntity<String> updateProfile(@RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -71,7 +78,7 @@ public class AuthenticationController {
                 user.setName(newName);
             }
             if (newPassword != null && !newPassword.isEmpty()) {
-                // Password encode karke save karna bohot zaroori hai!
+                // Encode password before saving
                 user.setPassword(passwordEncoder.encode(newPassword));
             }
             userRepository.save(user);

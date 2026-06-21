@@ -36,22 +36,22 @@ public class SecurityConfiguration {
             .cors(Customizer.withDefaults()) 
             .csrf(AbstractHttpConfigurer::disable) 
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // 🔥 Sab open kar diya
+                .anyRequest().permitAll() // all endpoints are open
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             
-            // 🔥 NAYA CHANGE: In dono lines ko humne comment (//) kar diya hai
-            // Taaki JWT Filter kisi bhi request ko block na kare
+            // Note: the following lines are commented out so the JWT filter and
+            // authentication provider are not applied to requests
             // .authenticationProvider(authenticationProvider)
             // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-    // 👉 NAYA BEAN: React (localhost:3000) ko explicitly allow karne ke liye
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Tera React frontend
+        // Allow React frontend running on localhost:3000
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin"));
         configuration.setAllowCredentials(true);

@@ -19,12 +19,12 @@ public class AiAnalysisService {
     @Autowired
     private WebSearchService webSearchService;
 
-    // 👉 FIX 1: URL generate karne ka naya tareeka (Model Name ke saath)
+    // Fix 1: URL generation with model name
     private String getGeminiUrl(String modelName) {
         return "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + geminiApiKey;
     }
 
-    // 👉 FIX 2: Timeout settings taaki connection infinite time tak hang na ho
+    // Fix 2: Timeout settings to avoid hanging connections
     private RestTemplate getRobustRestTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(10000); // 10 seconds to connect
@@ -32,20 +32,19 @@ public class AiAnalysisService {
         return new RestTemplate(factory);
     }
 
-    // 👉 FIX 3: Ultimate Fallback & Retry Logic (Model Names Corrected)
+    // Fix 3: Fallback and retry logic
     private ResponseEntity<String> sendRequestWithRetry(HttpEntity<Map<String, Object>> request) {
         RestTemplate restTemplate = getRobustRestTemplate();
         
-        // 👉 Yahan exact wo names daale hain jo free tier pe 100% exist karte hain
         String primaryModel = "gemini-flash-latest"; 
         String fallbackModel = "gemini-pro"; 
         
         int retries = 0;
         while (retries < 3) {
             try {
-                // Pehle 2 try Flash pe, aakhri try Pro pe
+                // Try Flash first, then fallback to Pro
                 String currentModel = (retries < 2) ? primaryModel : fallbackModel;
-                if (retries == 2) System.out.println("⚠️ Switching to Fallback Model: " + fallbackModel);
+                if (retries == 2) System.out.println("⚠️ Switching to fallback model: " + fallbackModel);
                 
                 return restTemplate.postForEntity(getGeminiUrl(currentModel), request, String.class);
             } catch (Exception e) {
@@ -61,7 +60,7 @@ public class AiAnalysisService {
         return null;
     }
 
-    // 👉 FIX 4: Frontend ko crash se bachane ke liye valid JSON format mein error
+    // Fix 4: Return a valid JSON error response
     private String getFallbackErrorJson(String errorMessage) {
         String safeError = errorMessage.replace("\"", "'").replace("\n", " ");
         return "{\n" +
@@ -109,7 +108,7 @@ public class AiAnalysisService {
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
             
-            // Naya retry handler use kiya
+            // Use the retry handler
             ResponseEntity<String> response = sendRequestWithRetry(request);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -170,7 +169,7 @@ public class AiAnalysisService {
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
             
-            // Naya retry handler use kiya
+            // Use the retry handler
             ResponseEntity<String> response = sendRequestWithRetry(request);
 
             ObjectMapper mapper = new ObjectMapper();
