@@ -37,7 +37,7 @@ public class AiAnalysisService {
         RestTemplate restTemplate = getRobustRestTemplate();
         
         String primaryModel = "gemini-flash-latest"; 
-        String fallbackModel = "gemini-pro"; 
+        String fallbackModel = "gemini-1.5-flash";
         
         int retries = 0;
         while (retries < 3) {
