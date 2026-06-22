@@ -36,13 +36,17 @@ public class AiAnalysisService {
     private ResponseEntity<String> sendRequestWithRetry(HttpEntity<Map<String, Object>> request) {
         RestTemplate restTemplate = getRobustRestTemplate();
         
-        String primaryModel = "gemini-2.5-flash"; 
+       // Tera Primary Model (List mein hai)
+        String primaryModel = "gemini-2.0-flash-lite"; 
+
+        // Tera Fallback Model (List mein hai)
         String fallbackModel = "gemini-2.5-flash-lite";
+
         
         int retries = 0;
         while (retries < 3) {
             try {
-                // Try Flash first, then fallback to Pro
+                // Try Flash first, then fallback to Lite
                 String currentModel = (retries < 2) ? primaryModel : fallbackModel;
                 if (retries == 2) System.out.println("⚠️ Switching to fallback model: " + fallbackModel);
                 
