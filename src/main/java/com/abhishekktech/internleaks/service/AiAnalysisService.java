@@ -36,8 +36,8 @@ public class AiAnalysisService {
     private ResponseEntity<String> sendRequestWithRetry(HttpEntity<Map<String, Object>> request) {
         RestTemplate restTemplate = getRobustRestTemplate();
         
-        String primaryModel = "gemini-flash-latest"; 
-        String fallbackModel = "gemini-1.5-flash";
+        String primaryModel = "gemini-2.5-flash"; 
+        String fallbackModel = "gemini-2.5-flash-lite";
         
         int retries = 0;
         while (retries < 3) {
