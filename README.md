@@ -52,22 +52,25 @@ Navigate to `src/main/resources/application.properties` and configure your local
 Properties
 
 ```
-# Server Configuration
-server.port=8080
+# Cloud Database Configuration
+spring.datasource.url=jdbc:mysql://[internleaksdb-abhishek859573-189c.i.aivencloud.com:22783/defaultdb?sslMode=REQUIRED](https://internleaksdb-abhishek859573-189c.i.aivencloud.com:22783/defaultdb?sslMode=REQUIRED)
+spring.datasource.username=avnadmin
+spring.datasource.password=${DB_PASS}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-# Database Configuration (MySQL)
-spring.datasource.url=jdbc:mysql://localhost:3306/internleaksdb?sslMode=REQUIRED
-spring.datasource.username=root
-spring.datasource.password=your_local_db_password
+# ==========================================
+
+# Hibernate Settings
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
-# AI & Third-Party APIs
-gemini.api.key=YOUR_GEMINI_API_KEY
-tavily.api.key=YOUR_TAVILY_API_KEY
+# ==========================================
 
-# JWT Configuration
-jwt.secret=your_super_secret_jwt_signature_key
+# API Keys Configuration
+gemini.api.key=${GEMINI_API_KEY}
+tavily.api.key=${TAVILY_API_KEY}
+
+
 ```
 
 ### 4. Build and Run
